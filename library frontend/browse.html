@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Browse Books</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    body {
+      background: linear-gradient(to right, #f7f9fc, #e3edf8);
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    .container {
+      padding: 40px 20px;
+    }
+
+    .search-bar {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      margin-bottom: 30px;
+    }
+
+    .card {
+      border: none;
+      border-radius: 15px;
+      transition: transform 0.3s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    .badge {
+      font-size: 0.8rem;
+    }
+
+    h2 {
+      font-weight: 700;
+      margin-bottom: 30px;
+    }
+
+    .status-available {
+      background-color: #28a745;
+    }
+
+    .status-issued {
+      background-color: #dc3545;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2 class="text-center mb-4"><i class="fas fa-book-open-reader"></i> Browse Books</h2>
+
+    <!-- Search and Filter -->
+    <div class="search-bar row g-3">
+      <div class="col-md-6">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search by title or author">
+      </div>
+      <div class="col-md-4">
+        <select id="categorySelect" class="form-select">
+          <option value="">All Categories</option>
+          <option value="Computer Science">Computer Science</option>
+          <option value="Literature">Literature</option>
+          <option value="History">History</option>
+          <option value="Science">Science</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button class="btn btn-primary w-100" onclick="fetchBooks()">Search</button>
+      </div>
+    </div>
+
+    <!-- Book Cards -->
+    <div class="row mt-4" id="booksContainer">
+      <!-- Book cards will be appended here -->
+    </div>
+  </div>
+
+  <script>
+    async function fetchBooks() {
+      const query = document.getElementById('searchInput').value.trim().toLowerCase();
+      const category = document.getElementById('categorySelect').value;
+      const booksContainer = document.getElementById('booksContainer');
+      booksContainer.innerHTML = '<p class="text-muted">Loading...</p>';
+
+      try {
+        const url = `http://localhost:3000/api/books/search/book?query=${encodeURIComponent(query)}&category=${encodeURIComponent(category)}`;
+        const res = await fetch(url);
+        const data = await res.json();
+        const books = data.results || [];
+
+        booksContainer.innerHTML = "";
+
+        if (books.length === 0) {
+          booksContainer.innerHTML = '<p class="text-danger">No books found.</p>';
+          return;
+        }
+
+        books.forEach(book => {
+          const statusBadge = book.status === "Available" 
+            ? `<span class="badge status-available text-white">Available</span>` 
+            : `<span class="badge status-issued text-white">Issued</span>`;
+
+          const card = `
+            <div class="col-md-4 mb-4">
+              <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title">${book.book_title}</h5>
+                  <p class="card-text mb-1"><strong>Author:</strong> ${book.author || "Unknown"}</p>
+                  <p class="card-text mb-1"><strong>Category:</strong> ${book.Category || "N/A"}</p>
+                  <p class="card-text mb-2"><strong>Book ID:</strong> ${book.book_id}</p>
+                  ${statusBadge}
+                </div>
+              </div>
+            </div>
+          `;
+          booksContainer.innerHTML += card;
+        });
+      } catch (err) {
+        booksContainer.innerHTML = `<p class="text-danger">Something went wrong.</p>`;
+        console.error(err);
+      }
+    }
+
+    // Initial load
+    fetchBooks();
+  </script>
+
+</body>
+</html>

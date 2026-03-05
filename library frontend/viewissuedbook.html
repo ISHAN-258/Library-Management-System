@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Issued Books</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      rel="stylesheet" />
+    <style>
+    body {
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    .dashboard-container {
+      display: flex;
+    }
+
+    .sidebar {
+      width: 260px;
+      background: #343a40;
+      color: #fff;
+      position: fixed;
+      height: 100vh;
+      padding-top: 30px;
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      font-size: 1.4rem;
+      margin-bottom: 30px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar ul li {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar ul li a {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: #fff;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+
+    .sidebar ul li a i {
+      margin-right: 12px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .sidebar ul li a:hover {
+      background: #007bff;
+    }
+
+    .main-content {
+      margin-left: 260px;
+      padding: 40px 20px;
+      transition: margin-left 0.3s ease;
+      width: 100%;
+    }
+
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1100;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.active {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+    }
+  </style>
+  </head>
+  <body>
+
+    <button class="menu-toggle" id="menuToggle"><i
+        class="fas fa-bars"></i></button>
+
+    <div class="dashboard-container">
+      <!-- Sidebar -->
+      <aside class="sidebar" id="sidebar">
+        <h2><i class="fas fa-user-graduate"></i> Student Panel</h2>
+        <ul>
+          <li><a href="viewissuedbook.html"><i class="fas fa-book"></i> View
+              Issued Books</a></li>
+          <li><a href="search book.html"><i class="fas fa-search"></i> Search
+              Books</a></li>
+          <li><a href="book_request.html"><i class="fas fa-envelope"></i> Book
+              Request</a></li>
+          <li><a href="student profile.html"><i class="fas fa-user"></i>
+              Profile</a></li>
+          <li><a href="logout_student2.html"><i class="fas fa-sign-out-alt"></i>
+              Logout</a></li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <h3 class="mb-4 text-center">📘 Your Issued Books</h3>
+        <div class="container">
+
+          <div id="issuedBooksContainer">
+            <!-- Books will be loaded here -->
+          </div>
+
+        </div>
+      </main>
+    </div>
+
+    <script>
+  // Sidebar toggle for small screens
+  document.getElementById('menuToggle').addEventListener('click', function () {
+    document.getElementById('sidebar').classList.toggle('active');
+  });
+
+  // 🧠 Function to fetch issued books for the logged-in student
+  async function loadIssuedBooks() {
+    const container = document.getElementById("issuedBooksContainer");
+    container.innerHTML = "";
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    const email = user?.email;
+
+    try {
+      const res = await fetch(`http://localhost:3000/api/issues/issue?email=${email}`);
+      const result = await res.json();
+      const books = result.data;
+
+      if (books.length === 0) {
+        container.innerHTML = "<p class='text-center text-muted'>No books issued yet.</p>";
+        return;
+      }
+
+      // 📋 Display each issued book
+      books.forEach(book => {
+        const bookCard = `
+          <div class="card mb-3">
+            <div class="card-body">
+              <h5 class="card-title">${book.bookTitle}</h5>
+              <p class="card-text">Category: ${book.bookCategory || 'N/A'}</p>
+              <p class="card-text">Issued Date: ${new Date(book.issueDate).toLocaleDateString()}</p>
+              <p class="card-text text-danger">Due Date: ${new Date(book.returnDate).toLocaleDateString()}</p>
+            </div>
+          </div>
+        `;
+        container.innerHTML += bookCard;
+      });
+
+    } catch (error) {
+      console.error("Failed to load issued books", error);
+      container.innerHTML = "<p class='text-danger'>Failed to fetch issued books.</p>";
+    }
+  }
+
+
+
+  // 📦 Load on page load
+  loadIssuedBooks();
+</script>
+
+  </body>
+</html>

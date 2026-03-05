@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      overflow-x: hidden;
+    }
+    .dashboard-container {
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar {
+      width: 280px;
+      background: #2c3e50;
+      color: white;
+      padding: 0;
+      position: fixed;
+      height: 100vh;
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s;
+      z-index: 1000;
+    }
+    .sidebar-header {
+      padding: 20px;
+      background: #1a252f;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .sidebar-header h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+    .sidebar-menu {
+      padding: 15px 0;
+    }
+    .sidebar-menu ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .sidebar-menu li a {
+      color: #ecf0f1;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      transition: all 0.3s;
+    }
+    .sidebar-menu li a:hover {
+      background: #34495e;
+      color: #fff;
+    }
+    .sidebar-menu li a i {
+      margin-right: 10px;
+      width: 20px;
+      text-align: center;
+    }
+    .sidebar-menu li.active a {
+      background: #3498db;
+      color: white;
+    }
+    .main-content {
+      margin-left: 280px;
+      padding: 20px;
+      width: calc(100% - 280px);
+      transition: all 0.3s;
+    }
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1001;
+      background: #343a40;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .librarian-form,
+    .librarian-table {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+    .card-header {
+      background-color: #f8f9fa;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+      padding: 15px 20px;
+      border-radius: 10px 10px 0 0;
+    }
+    .card-body {
+      padding: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-280px);
+      }
+      .sidebar.active {
+        transform: translateX(0);
+      }
+      .main-content {
+        margin-left: 0;
+        width: 100%;
+      }
+      .menu-toggle {
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="menu-toggle" id="menuToggle">☰ Menu</button>
+  <div class="dashboard-container">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h2><i class="fas fa-user-shield"></i> ADMIN PANEL</h2>
+      </div>
+      <div class="sidebar-menu">
+        <ul>
+          <li><a href="admindashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+          <li><a href="manage books.html"><i class="fas fa-book"></i> Manage Books</a></li>
+          <li><a href="manage members.html"><i class="fas fa-users"></i> Manage Members</a></li>
+          <li><a href="reports admin.html"><i class="fas fa-chart-bar"></i> Reports</a></li>
+          <li><a href="settings_admin.html"><i class="fas fa-cog"></i> Settings</a></li>
+          <li><a href="logout_admin.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>        
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h1 class="h4 mb-0">Welcome, Admin</h1>
+        </div>
+        <div class="card-body">
+          <p class="lead">Use the sidebar to navigate through the dashboard.</p>
+        </div>
+      </div>
+
+      <div class="librarian-form">
+        <h3 class="mb-4"><i class="fas fa-user-tie me-2"></i>Manage Librarians</h3>
+        <form id="librarianForm">
+          <div class="mb-3">
+            <label for="librarianId" class="form-label">Librarian ID</label>
+            <input type="text" class="form-control" id="librarianId" required />
+          </div>
+          <div class="mb-3">
+            <label for="librarianPassword" class="form-label">Password</label>
+            <input type="password" class="form-control" id="librarianPassword" required />
+          </div>
+          <button type="submit" class="btn btn-primary">Add Librarian</button>
+        </form>
+      </div>
+
+      <div class="librarian-table">
+        <h3 class="mb-4"><i class="fas fa-list me-2"></i>Existing Librarians</h3>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Password</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="librarianTableBody">
+            <!-- Dynamic content -->
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById("menuToggle").addEventListener("click", function () {
+        document.getElementById("sidebar").classList.toggle("active");
+      });
+
+      const librarianForm = document.getElementById("librarianForm");
+      const librarianTableBody = document.getElementById("librarianTableBody");
+
+      let librarians = [
+        
+      ];
+
+      function displayLibrarians() {
+        librarianTableBody.innerHTML = "";
+        librarians.forEach((lib) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${lib.id}</td>
+            <td>${"*".repeat(lib.password.length)}</td>
+            <td>
+              <button class="btn btn-sm btn-danger delete-btn" data-id="${lib.id}">Delete</button>
+            </td>
+          `;
+          librarianTableBody.appendChild(row);
+        });
+
+        document.querySelectorAll(".delete-btn").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const id = this.getAttribute("data-id");
+            librarians = librarians.filter((lib) => lib.id !== id);
+            displayLibrarians();
+          });
+        });
+      }
+
+      librarianForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const id = document.getElementById("librarianId").value;
+        const password = document.getElementById("librarianPassword").value;
+
+        if (id && password) {
+          librarians.push({ id, password });
+          displayLibrarians();
+          librarianForm.reset();
+        }
+      });
+
+      displayLibrarians();
+    });
+  </script>
+</body>
+</html>

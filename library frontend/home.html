@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Library Management - Welcome!</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet" />
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+    :root { /* Define variables for easier theme changes */
+      --primary-color: #0d6efd; /* Default Bootstrap Blue */
+      --secondary-color: #6c757d;
+      --light-bg: #f8f9fa;
+      --dark-footer-bg: #2c3e50;
+      --card-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      --card-hover-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      --border-radius-sm: 0.25rem;
+      --border-radius-md: 0.5rem; /* Slightly larger radius for cards */
+      --border-radius-lg: 1rem; /* For explore cards */
+      --border-radius-pill: 50px;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Added fallbacks */
+      color: #333; /* Default text color */
+    }
+
+    .navbar {
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      background-color: #ffffff; /* Ensure white background */
+    }
+
+    .navbar-brand {
+      font-weight: 700; /* Slightly bolder */
+      color: var(--primary-color) !important; /* Use primary color */
+    }
+    .navbar-brand .fa-book-open {
+      color: var(--primary-color);
+    }
+
+    .nav-link {
+      font-weight: 500;
+      color: #555 !important; /* Slightly darker nav links */
+    }
+    .nav-link:hover, .nav-link.active { /* Added active state */
+       color: var(--primary-color) !important;
+    }
+
+    .login-dropdown .dropdown-menu {
+      min-width: 220px; /* Slightly wider */
+      border-radius: var(--border-radius-md);
+      box-shadow: var(--card-shadow);
+    }
+    .login-dropdown .dropdown-item {
+      padding: 0.5rem 1rem;
+    }
+     .login-dropdown .dropdown-item i {
+       width: 20px; /* Align icons */
+       text-align: center;
+     }
+
+    .carousel-item img {
+      height: 550px; /* Slightly taller */
+      object-fit: cover;
+      filter: brightness(0.7); /* Slightly darken image for text contrast */
+    }
+    .carousel-caption {
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7); /* Add text shadow */
+        bottom: 3rem; /* Adjust position */
+    }
+    .carousel-caption h5 {
+        font-size: 2.5rem; /* Larger heading */
+        font-weight: bold;
+    }
+    .carousel-caption p {
+        font-size: 1.2rem;
+    }
+
+    .section-title {
+      font-weight: 700; /* Bolder */
+      margin-bottom: 40px; /* More space */
+      color: #2c3e50; /* Darker title */
+    }
+
+    /* Shared Card Styles */
+    .base-card {
+        border-radius: var(--border-radius-md);
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease-in-out; /* Smoother transition */
+        border: none; /* Remove default border */
+        overflow: hidden; /* Ensure image corners are rounded */
+        height: 100%; /* Make cards in a row equal height */
+        display: flex; /* Enable flex for vertical alignment */
+        flex-direction: column;
+    }
+    .base-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--card-hover-shadow);
+    }
+    .base-card .card-body {
+        padding: 1.5rem; /* More padding */
+        flex-grow: 1; /* Allow body to grow */
+        display: flex;
+        flex-direction: column;
+    }
+    .base-card .card-title {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 0.75rem;
+    }
+    .base-card .card-text {
+      color: #555;
+      flex-grow: 1; /* Push button to bottom */
+      margin-bottom: 1rem;
+    }
+     .base-card .btn {
+       align-self: flex-start; /* Align button left if needed, or center */
+       /* align-self: center; */ /* Uncomment for centered button */
+       margin-top: auto; /* Push button down */
+     }
+
+
+    .role-card img {
+      height: 200px; /* Slightly larger image */
+      object-fit: cover;
+      width: 100%;
+    }
+
+    /* Explore Section Specifics */
+    .explore-library-section {
+      /* Nicer gradient */
+      background: linear-gradient(135deg, #6DD5FA 0%, #2980B9 100%);
+      color: white;
+      padding: 60px 0; /* More padding */
+    }
+    .explore-library-section .section-heading h2{
+        font-weight: 700;
+        font-size: 2.8rem; /* Larger heading */
+    }
+     .explore-library-section .section-heading p{
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.9);
+    }
+
+    .explore-card {
+        background-color: rgba(255, 255, 255, 0.95); /* Slightly transparent white */
+        border-radius: var(--border-radius-lg); /* Larger radius */
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+    .explore-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 12px 25px rgba(41, 128, 185, 0.3); /* Colored shadow on hover */
+    }
+    .explore-card .card-body {
+        padding: 2rem; /* More padding */
+    }
+    .explore-card i {
+        margin-bottom: 1.5rem !important; /* More space below icon */
+        /* Keep icon colors */
+    }
+    .explore-card .card-title {
+        color: #2980B9; /* Match gradient color */
+    }
+    .explore-card .btn {
+        font-weight: 500;
+        border-radius: var(--border-radius-pill);
+        padding: 10px 25px; /* Larger button */
+    }
+
+    /* Events Section Specifics */
+    .events-section {
+        background-color: var(--light-bg); /* Use variable */
+        padding: 60px 0;
+    }
+    .event-card {
+        /* Inherits from .base-card */
+    }
+    .event-card img {
+        height: 180px;
+        object-fit: cover;
+    }
+    .event-card .card-body p strong {
+      color: #555;
+    }
+
+    .footer {
+      background-color: var(--dark-footer-bg); /* Use variable */
+      color: rgba(255, 255, 255, 0.8); /* Slightly softer white */
+      padding: 40px 0; /* More padding */
+      margin-top: 60px;
+      text-align: center;
+    }
+     .footer p {
+       margin-bottom: 0; /* Remove default margin */
+       font-size: 0.9rem;
+     }
+      .footer .heart { /* Style the heart */
+        color: #e74c3c;
+        display: inline-block;
+        animation: pulse 1.5s infinite ease-in-out;
+      }
+
+    /* Optional: Add a pulsing animation for the heart */
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
+    }
+
+    /* Utility */
+    .btn {
+      font-weight: 500;
+      border-radius: var(--border-radius-pill);
+      padding: 8px 20px;
+      transition: all 0.2s ease; /* Smooth button transitions */
+    }
+     .btn:hover {
+        transform: translateY(-2px); /* Subtle lift on hover */
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+     }
+
+  </style>
+  </head>
+  <body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+      <!-- Removed bg-white and navbar-light, handled in CSS -->
+      <div class="container">
+        <a class="navbar-brand" href="#">
+          <i class="fas fa-book-open me-2"></i>Smart Library
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarNav" aria-controls="navbarNav"
+          aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto align-items-center">
+            <!-- align-items-center for vertical alignment if needed -->
+            <li class="nav-item">
+              <a class="nav-link" href="#features">Features</a>
+              <!-- Make sure you have a section with id="features" or change href -->
+            </li>
+            <li class="nav-item dropdown login-dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="loginDropdown"
+                role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-sign-in-alt me-1"></i>Login
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end"
+                aria-labelledby="loginDropdown">
+                <li><a class="dropdown-item" href="admin.html"><i
+                      class="fas fa-user-shield me-2"></i>Admin Login</a></li>
+                <li><a class="dropdown-item" href="Librarian Login.html"><i
+                      class="fas fa-user-tie me-2"></i>Librarian Login</a></li>
+                <li><a class="dropdown-item" href="student.html"><i
+                      class="fas fa-user-graduate me-2"></i>Student
+                    Login</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main>
+
+      <!-- Hero Image Slider -->
+      <div id="carouselExampleCaptions" class="carousel slide"
+        data-bs-ride="carousel">
+        <div class="carousel-indicators">
+          <!-- Added indicators for better navigation -->
+          <button type="button" data-bs-target="#carouselExampleCaptions"
+            data-bs-slide-to="0" class="active" aria-current="true"
+            aria-label="Slide 1"></button>
+          <button type="button" data-bs-target="#carouselExampleCaptions"
+            data-bs-slide-to="1" aria-label="Slide 2"></button>
+          <button type="button" data-bs-target="#carouselExampleCaptions"
+            data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <!-- Image from Unsplash by Janko Ferlic -->
+            <img
+              src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80"
+              class="d-block w-100"
+              alt="Modern library interior with rows of bookshelves and reading areas">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Welcome to Smart Library</h5>
+              <p>Empowering learning through technology and innovation.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <!-- Image from Unsplash by Perfecto Capucine -->
+            <img
+              src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1674&q=80"
+              class="d-block w-100"
+              alt="Person holding an open book with glowing digital elements superimposed">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Digital Book Access</h5>
+              <p>Thousands of books, journals, and digital resources at your
+                fingertips.</p>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <!-- Image from Unsplash by Antenna -->
+            <img
+              src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80"
+              class="d-block w-100"
+              alt="Group of diverse people collaborating around a table during a workshop">
+            <div class="carousel-caption d-none d-md-block">
+              <h5>Join Our Events</h5>
+              <p>Reading sessions, workshops, and more exciting activities.</p>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button"
+          data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button"
+          data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+
+      <!-- Explore Library -->
+      <section class="explore-library-section">
+        <!-- Removed py-5, handled in CSS -->
+        <div class="container">
+          <div class="text-center text-white mb-5 section-heading">
+            <!-- Added class for heading styles -->
+            <h2 class="display-5">📚 Explore Our Digital Library</h2>
+            <p class="fs-5">Thousands of books, journals, and digital resources
+              at your fingertips.</p>
+          </div>
+          <div class="row g-4 justify-content-center">
+            <!-- Center cards if fewer than 3 -->
+            <div class="col-md-6 col-lg-4">
+              <!-- Adjusted grid for better spacing -->
+              <div class="card explore-card h-100"> <!-- Added h-100 -->
+                <div class="card-body d-flex flex-column">
+                  <!-- Added flex classes -->
+                  <i class="fas fa-book fa-3x mb-3 text-warning mx-auto"></i>
+                  <!-- Added mx-auto -->
+                  <h5 class="card-title">Browse Books</h5>
+                  <p class="card-text flex-grow-1">Explore fiction, non-fiction,
+                    academic materials, and more.</p> <!-- Added flex-grow-1 -->
+                  <a href="browse.html"
+                    class="btn btn-outline-warning mt-auto">Browse Now</a>
+                  <!-- Added mt-auto -->
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+              <div class="card explore-card h-100">
+                <div class="card-body d-flex flex-column">
+                  <i
+                    class="fas fa-book-reader fa-3x mb-3 text-info mx-auto"></i>
+                  <h5 class="card-title">Issued Books</h5>
+                  <p class="card-text flex-grow-1">Track your issued books, due
+                    dates, and history.</p>
+                  <a href="issued book.html"
+                    class="btn btn-outline-info mt-auto">View Issued</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
+              <div class="card explore-card h-100">
+                <div class="card-body d-flex flex-column">
+                  <i class="fas fa-search fa-3x mb-3 text-success mx-auto"></i>
+                  <h5 class="card-title">Search Library</h5>
+                  <p class="card-text flex-grow-1">Find books by title, author,
+                    subject, or ISBN.</p>
+                  <a href="searchbookhome.html"
+                    class="btn btn-outline-success mt-auto">Search Now</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Role Access Cards -->
+      <section class="py-5" id="features"> <!-- Added id="features" -->
+        <div class="container">
+          <h2 class="text-center section-title">Login As</h2>
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="role-card base-card card">
+                <!-- Added base-card class -->
+                <!-- Image from Unsplash by Taylor Vick -->
+                <img
+                  src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80"
+                  class="card-img-top"
+                  alt="Computer screen showing complex data dashboards and charts">
+                <div class="card-body">
+                  <h5 class="card-title">Admin</h5>
+                  <p class="card-text">Manage librarians, system settings, and
+                    users.</p>
+                  <a href="admin.html"
+                    class="btn btn-outline-primary mt-auto">Admin Login</a>
+                  <!-- Link to login page -->
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="role-card base-card card">
+                <!-- Image from Unsplash by Alfons Morales -->
+                <img
+                  src="https://th.bing.com/th/id/OIP.vFWmMWgriS4NpfJ0v6TzFQAAAA?rs=1&pid=ImgDetMain"
+                  class="card-img-top"
+                  alt="Librarian organizing books on a wooden shelf">
+                <div class="card-body">
+                  <h5 class="card-title">Librarian</h5>
+                  <p class="card-text">Issue/return books and maintain
+                    records.</p>
+                  <a href="Librarian Login.html"
+                    class="btn btn-outline-success mt-auto">Librarian Login</a>
+                  <!-- Link to login page -->
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="role-card base-card card">
+                <!-- Image from Unsplash by Thought Catalog -->
+                <img
+                  src="https://images.unsplash.com/photo-1491841573634-28140fc7ced7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80"
+                  class="card-img-top"
+                  alt="Student sitting at a table reading a book in a library setting">
+                <div class="card-body">
+                  <h5 class="card-title">Student</h5>
+                  <p class="card-text">Check book status, issue history and
+                    explore.</p>
+                  <a href="student.html"
+                    class="btn btn-outline-info mt-auto">Student Login</a>
+                  <!-- Link to login page -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Events Section -->
+      <section class="events-section">
+        <!-- Changed class, removed py-5 bg-light -->
+        <div class="container">
+          <div class="text-center mb-5">
+            <h2 class="section-title">Upcoming Events</h2>
+            <!-- Use section-title class -->
+            <p class="fs-5 text-muted">Join our workshops, reading sessions &
+              more!</p>
+          </div>
+          <div class="row g-4">
+            <div class="col-md-4">
+              <div class="card event-card base-card"> <!-- Added base-card -->
+                <!-- Image from Unsplash by Alexis Brown -->
+                <img
+                  src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=749&q=80"
+                  class="card-img-top"
+                  alt="Group of people sitting together talking and reading books">
+                <div class="card-body">
+                  <h5 class="card-title">Reading Session</h5>
+                  <p class="card-text">Group reading on top fiction &
+                    classics.</p>
+                  <p class="card-text"><small
+                      class="text-muted"><strong>Date:</strong> 20th May,
+                      2025</small></p>
+                  <a href="#" class="btn btn-outline-primary mt-auto">Learn
+                    More</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card event-card base-card">
+                <!-- Image from Unsplash by Product School -->
+                <img
+                  src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1932&q=80"
+                  class="card-img-top"
+                  alt="People attending a workshop presentation with laptops">
+                <div class="card-body">
+                  <h5 class="card-title">Library Workshop</h5>
+                  <p class="card-text">Master digital tools and smart search
+                    techniques.</p>
+                  <p class="card-text"><small
+                      class="text-muted"><strong>Date:</strong> 25th May,
+                      2025</small></p>
+                  <a href="#" class="btn btn-outline-primary mt-auto">Learn
+                    More</a>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="card event-card base-card">
+                <!-- Image from Unsplash by Tom Hermans -->
+                <img
+                  src="https://images.unsplash.com/photo-1589998059171-988d887df646?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1770&q=80"
+                  class="card-img-top"
+                  alt="Close-up of a newly opened book with bright lighting">
+                <div class="card-body">
+                  <h5 class="card-title">Book Launch</h5>
+                  <p class="card-text">Attend the launch event for the latest
+                    bestseller.</p>
+                  <p class="card-text"><small
+                      class="text-muted"><strong>Date:</strong> 1st June,
+                      2025</small></p>
+                  <a href="#" class="btn btn-outline-primary mt-auto">Learn
+                    More</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main> <!-- End Main Content Area -->
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <p>© 2025 Smart Library | Designed with <span class="heart">❤️</span>
+          for Book Lovers</p>
+        <!-- Optional: Add social media links or other footer content here -->
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

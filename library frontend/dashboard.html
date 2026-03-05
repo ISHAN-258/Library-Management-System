@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        .dashboard-container {
+            display: flex;
+            width: 100%;
+        }
+        .sidebar {
+            width: 250px;
+            background: #333;
+            color: white;
+            padding: 20px;
+        }
+        .sidebar h2 {
+            text-align: center;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            padding: 10px;
+            border-bottom: 1px solid #444;
+        }
+        .sidebar ul li a {
+            color: white;
+            text-decoration: none;
+            display: block;
+        }
+        .sidebar ul li:hover {
+            background: #575757;
+        }
+        .main-content {
+            flex-grow: 1;
+            padding: 20px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            flex: 1;
+            margin: 5px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            font-size: 18px;
+        }
+        .charts {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .chart {
+            background: white;
+            padding: 30px;
+            flex: 1;
+            margin: 5px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchInput = document.querySelector("input");
+            searchInput.addEventListener("input", function() {
+                console.log("Searching: " + searchInput.value);
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h2>📚 Library</h2>
+            <ul>
+                <li><a href="dashbord.html">Dashboard</a></li>
+                <li><a href="/books.html">Books</a></li>
+                <li><a href="Members.html">Members</a></li>
+                <li><a href="issued books.html">Issued Books</a></li>
+                <li><a href="reports.html">Reports</a></li>
+                <li><a href="settings.html">Settings</a></li>
+                <li><a href="logout.html">Logout</a></li>
+            </ul>
+        </aside>
+        <main class="main-content">
+            <header>
+                <h1>Library Dashboard</h1>
+                <input type="text" placeholder="Search...">
+            </header>
+            <section class="stats">
+                <div class="card">📖 Total Books: <span>1200</span></div>
+                <div class="card">👥 Active Members: <span>450</span></div>
+                <div class="card">📅 Issued Today: <span>35</span></div>
+                <div class="card">🚀 Overdue Books: <span>12</span></div>
+            </section>
+            <section class="charts">
+                <div class="chart" id="books-chart">📊 Books Issued Chart</div>
+                <div class="chart" id="members-chart">📈 Membership Growth</div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

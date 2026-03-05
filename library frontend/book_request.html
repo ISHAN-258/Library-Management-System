@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Book Request</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background-color: #e9f0fb;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    .dashboard-container {
+      display: flex;
+    }
+
+    .sidebar {
+      width: 260px;
+      background: #343a40;
+      color: #fff;
+      position: fixed;
+      height: 100vh;
+      padding-top: 30px;
+      z-index: 1000;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      font-size: 1.4rem;
+      margin-bottom: 30px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar ul li {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar ul li a {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: #fff;
+      text-decoration: none;
+      transition: background 0.3s;
+    }
+
+    .sidebar ul li a i {
+      margin-right: 12px;
+      width: 20px;
+      text-align: center;
+    }
+
+    .sidebar ul li a:hover {
+      background: #007bff;
+    }
+
+    .main-content {
+      margin-left: 260px;
+      padding: 40px 20px;
+      transition: margin-left 0.3s ease;
+      width: 100%;
+    }
+
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1100;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      padding: 10px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.active {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+    }
+
+    .form-container {
+      max-width: 600px;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin: auto;
+    }
+
+    .form-container h3 {
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <h2><i class="fas fa-user-graduate"></i> Student Panel</h2>
+      <ul>
+        <li><a href="viewissuedbook.html"><i class="fas fa-book"></i> View Issued Books</a></li>
+        <li><a href="search book.html"><i class="fas fa-search"></i> Search Books</a></li>
+        <li><a href="book_request.html"><i class="fas fa-envelope"></i> Book Request</a></li>
+        <li><a href="student profile.html"><i class="fas fa-user"></i> Profile</a></li>
+        <li><a href="logout_student2.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="form-container">
+        <h3>Book Request Form</h3>
+        <form id="bookRequestForm">
+          <div class="mb-3">
+            <label for="bookId" class="form-label">Book ID</label>
+            <input type="text" class="form-control" id="bookId" placeholder="Enter Book ID" required>
+          </div>
+          <div class="mb-3">
+            <label for="bookTitle" class="form-label">Book Title</label>
+            <input type="text" class="form-control" id="bookTitle" placeholder="Enter Book Title" required>
+          </div>
+          <div class="mb-3">
+            <label for="category" class="form-label">Category</label>
+            <input type="text" class="form-control" id="category" placeholder="Enter Book Category" required>
+          </div>
+          <div class="mb-3">
+            <label for="reason" class="form-label">Why You Need This Book?</label>
+            <textarea class="form-control" id="reason" rows="4" placeholder="Explain why you need this book..." required></textarea>
+          </div>
+          <div class="d-grid">
+            <button type="submit" class="btn btn-primary">Submit Request</button>
+          </div>
+        </form>
+        <div id="message" class="mt-3"></div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    document.getElementById('menuToggle').addEventListener('click', function () {
+      document.getElementById('sidebar').classList.toggle('active');
+    });
+
+    document.getElementById('bookRequestForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const user = JSON.parse(localStorage.getItem('user'));
+      const studentId = user.id;
+      const bookId = document.getElementById('bookId').value;
+      const bookTitle = document.getElementById('bookTitle').value;
+      const category = document.getElementById('category').value;
+      const reason = document.getElementById('reason').value;
+
+      fetch('http://localhost:3000/api/book-requests', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          studentId,
+          bookId,
+          bookTitle,
+          category,
+          reason
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('message').innerHTML = `<div class="alert alert-success">Request submitted successfully!</div>`;
+        document.getElementById('bookRequestForm').reset();
+      })
+      .catch(err => {
+        document.getElementById('message').innerHTML = `<div class="alert alert-danger">Something went wrong!</div>`;
+      });
+    });
+  </script>
+
+</body>
+</html>
